@@ -1,34 +1,28 @@
-export default function TransactionList({ transactions = [], onDelete, onChangeCategory }) {
-return (
-<div className="mt-4">
-<div className="overflow-x-auto">
-<table className="min-w-full bg-white">
-<thead>
-<tr>
-<th className="px-4 py-2">Date</th>
-<th className="px-4 py-2">Description</th>
-<th className="px-4 py-2">Amount</th>
-<th className="px-4 py-2">Category</th>
-<th className="px-4 py-2">Actions</th>
-</tr>
-</thead>
-<tbody>
-{transactions.map(tx => (
-<tr key={tx.id} className="border-t">
-<td className="px-4 py-2">{tx.date}</td>
-<td className="px-4 py-2">{tx.description}</td>
-<td className="px-4 py-2">{tx.amount.toFixed(2)}</td>
-<td className="px-4 py-2">
-<input className="border p-1 text-sm" value={tx.category || ''} onChange={(e)=>onChangeCategory(tx.id, e.target.value)} placeholder="uncategorized" />
-</td>
-<td className="px-4 py-2">
-<button className="text-sm text-red-600" onClick={()=>onDelete(tx.id)}>Delete</button>
-</td>
-</tr>
-))}
-</tbody>
-</table>
-</div>
-</div>
-)
+export default function TransactionList({ transactions }) {
+  if (!transactions.length) return <p className="text-gray-400">No transactions yet</p>
+
+  return (
+    <div className="overflow-x-auto">
+      <table className="min-w-full table-auto">
+        <thead>
+          <tr className="bg-gray-100">
+            <th className="px-4 py-2 text-left text-gray-600">Date</th>
+            <th className="px-4 py-2 text-left text-gray-600">Description</th>
+            <th className="px-4 py-2 text-left text-gray-600">Category</th>
+            <th className="px-4 py-2 text-right text-gray-600">Amount</th>
+          </tr>
+        </thead>
+        <tbody>
+          {transactions.map(tx=>(
+            <tr key={tx.id} className="border-b hover:bg-gray-50 transition">
+              <td className="px-4 py-2">{tx.date}</td>
+              <td className="px-4 py-2">{tx.description}</td>
+              <td className="px-4 py-2">{tx.category || 'Uncategorized'}</td>
+              <td className="px-4 py-2 text-right font-medium">${tx.amount}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  )
 }
