@@ -98,17 +98,88 @@ export default function UploadPage() {
           </div>
         )}
 
-        {activeTab === 'Analytics' && (
-          <div className="bg-white shadow rounded-lg p-6">
-            <h3 className="font-semibold text-gray-700 mb-4">Spending Insights</h3>
-            <p className="text-gray-500 mb-2">Charts and insights will go here.</p>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="bg-gray-50 rounded-lg p-4 text-center">Pie Chart Placeholder</div>
-              <div className="bg-gray-50 rounded-lg p-4 text-center">Bar Chart Placeholder</div>
-            </div>
-          </div>
-        )}
+       {activeTab === 'Analytics' && (
+  <div className="bg-white shadow rounded-lg p-6">
+    <h3 className="font-semibold text-gray-700 mb-4">Spending Insights</h3>
+
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+      {/* Spending by Category Pie Chart */}
+      <div className="bg-gray-50 rounded-lg p-4">
+        <h4 className="font-semibold text-gray-700 mb-2">Spending by Category</h4>
+        <ResponsiveContainer width="100%" height={250}>
+          <PieChart>
+            <Pie
+              data={transactions.reduce((acc, t) => {
+                const cat = t.category || 'Uncategorized'
+                const found = acc.find(a => a.name === cat)
+                if (found) found.value += Number(t.amount || 0)
+                else acc.push({ name: cat, value: Number(t.amount || 0) })
+                return acc
+              }, [])}
+              dataKey="value"
+              nameKey="name"
+              cx="50%"
+              cy="50%"
+              outerRadius={80}
+              label
+            >
+              {transactions.map((t, idx) => (
+                <Cell key={idx} fill={SAMPLE_COLORS[idx % SAMPLE_COLORS.length]} />
+              ))}
+            </Pie>
+            <Tooltip />
+          </PieChart>
+        </ResponsiveContainer>
       </div>
+
+      {/* Monthly Spending Line Chart */}
+      <div className="bg-gray-50 rounded-lg p-4">
+        <h4 className="font-semibold text-gray-700 mb-2">Monthly Spending</h4>
+        <ResponsiveContainer width="100%" height={250}>
+          <LineChart
+            data={transactions.reduce((acc, t) => {
+              const date = new Date(t.date)
+              const month = `${date.getFullYear()}-${date.getMonth() + 1}`
+              const found = acc.find(a => a.month === month)
+              if (found) found.amount += Number(t.amount || 0)
+              else acc.push({ month, amount: Number(t.amount || 0) })
+              return acc
+            }, [])}
+            margin={{ top: 10, right: 20, left: 0, bottom: 0 }}
+          >
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="month" />
+            <YAxis />
+            <Tooltip />
+            <Line type="monotone" dataKey="amount" stroke="#4ade80" strokeWidth={2} />
+          </LineChart>
+        </ResponsiveContainer>
+      </div>
+
+      {/* Top Merchants / Descriptions Bar Chart */}
+      <div className="bg-gray-50 rounded-lg p-4 md:col-span-2">
+        <h4 className="font-semibold text-gray-700 mb-2">Top Merchants</h4>
+        <ResponsiveContainer width="100%" height={300}>
+          <BarChart
+            data={transactions.reduce((acc, t) => {
+              const desc = t.description || 'Unknown'
+              const found = acc.find(a => a.name === desc)
+              if (found) found.value += Number(t.amount || 0)
+              else acc.push({ name: desc, value: Number(t.amount || 0) })
+              return acc
+            }, []).sort((a,b)=>b.value-a.value).slice(0,10)}
+            margin={{ top: 5, right: 20, left: 0, bottom: 5 }}
+          >
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="name" />
+            <YAxis />
+            <Tooltip />
+            <Bar dataKey="value" fill="#60a5fa" />
+          </BarChart>
+        </ResponsiveContainer>
+      </div>
+
     </div>
-  )
-}
+  </div>
+)}
