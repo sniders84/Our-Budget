@@ -10,14 +10,21 @@ export default function Home() {
   return (
     <Layout>
       {active => {
-        switch(active) {
-          case 'Overview': return <OverviewTab />
-          case 'Transactions': return <TransactionsTab />
-          case 'Budgets': return <BudgetsTab />
-          case 'Bills': return <BillsTab />
-          case 'Analytics': return <AnalyticsTab />
-          case 'Accounts': return <AccountsTab />
-          default: return <OverviewTab />
+        switch (active) {
+          case 'Overview':
+            return <OverviewTab />
+          case 'Transactions':
+            return <TransactionsTab />
+          case 'Budgets':
+            return <BudgetsTab />
+          case 'Bills':
+            return <BillsTab />
+          case 'Analytics':
+            return <AnalyticsTab />
+          case 'Accounts':
+            return <AccountsTab />
+          default:
+            return <OverviewTab />
         }
       }}
     </Layout>
